@@ -1,0 +1,98 @@
+import NextAuth from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import { NextAuthOptions } from "next-auth"
+import bcrypt from "bcrypt";
+import User from "@/models/UserModel";
+import connectDB from "@/lib/connectDB";
+
+export const authOptions: NextAuthOptions = {
+    // Credentials Provider & GitHub Provider
+    providers: [
+        CredentialsProvider({
+
+            // The name to display on the sign in form (e.g. "Sign in with...")
+            name: "Credentials",
+
+            // This is the description for the sign in form.
+            credentials: {
+                email: { label: "Email", type: "email", placeholder: "john@example.com" },
+                password: { label: "Password", type: "password" }
+            },
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async authorize(credentials: any) {
+
+                await connectDB();
+
+                try {
+
+                    const user = await User.findOne({
+                        $or: [
+                            { username: credentials.username },
+                            { email: credentials.email }
+                        ]
+                    });
+
+                    if (!user) {
+                        throw new Error("User not found");
+                    }
+
+                    if (!user.isVerified) {
+                        throw new Error("Please verify your email before logging in.");
+                    }
+
+                    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+
+                    if (!isPasswordValid) {
+                        throw new Error("Invalid password");
+                    }
+
+                    return user;
+
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } catch (error: any) {
+                    throw new Error(error);
+                }
+            }
+        }),
+        GitHubProvider({
+            clientId: process.env.GITHUB_ID!,
+            clientSecret: process.env.GITHUB_SECRET!
+        })
+    ],
+    // Callbacks for JWT and Session
+    callbacks: {
+        async jwt({ token, user }) {
+
+            if(user){
+                token.id = user._id?.toString()
+                token.isVerified = user.isVerified
+                token.isAcceptingMessages = user.isAcceptingMessages
+                token.userName = user.userName
+            }
+
+            return token
+        },
+        async session({ session, token }) {
+
+            if(token){
+                session.user._id = token.id
+                session.user.isVerified = token.isVerified
+                session.user.isAcceptingMessages = token.isAcceptingMessages
+                session.user.userName = token.userName
+            }
+
+            return session
+        }
+    },
+    pages: {
+        signIn: "/login",
+    },
+    session: {
+        strategy: "jwt",
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+}
+
+export default NextAuth(authOptions)
