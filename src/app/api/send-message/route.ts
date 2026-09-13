@@ -1,0 +1,36 @@
+import connectDB from "@/lib/connectDB";
+import User from "@/models/UserModel";
+import { Message } from "@/models/UserModel"
+
+export async function POST(req: Request) {
+
+    await connectDB();
+
+    try {
+
+        const { userName, messageContent } = await req.json();
+        
+        // Find the user by username and check if they are accepting messages
+        const user = await User.findOne({ userName, isAcceptingMessages: true });
+        
+        if (!user) {
+            return Response.json({ success: false, message: "User not found or not accepting messages" }, { status: 404 });
+        }
+        
+        // Add the message to the user's messages array
+
+        const message = {
+            content: messageContent,
+            createdAt: new Date()
+        };
+        user.messages.push(message as Message);
+        await user.save();  
+        
+        return Response.json({ success: true, message: "Message sent successfully" }, { status: 200 });
+
+    } catch (error) {
+        console.error("Error sending message:", error);
+        return Response.json({ success: false, message: "Error sending message" }, { status: 500 });
+    }
+
+}
