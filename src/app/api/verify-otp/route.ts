@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
         // Extracting UserName From Url 
         const url = new URL(req.url);
-        const userName = url.searchParams.get("username");
+        const userName = url.searchParams.get("userName");
 
         // Validate the request body using Zod
         const verifyCode = {

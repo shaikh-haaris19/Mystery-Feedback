@@ -6,15 +6,19 @@ import sendVerificationEmail from "@/Helpers/sendVerificationEmail";
 
 export async function POST(request: NextRequest) {
 
+    console.log("Received Registration Request");
+
     // Connect to the database
     await connectDB();
 
     try {
 
-        const { username, email, password } = await request.json();
+        const { userName, email, password } = await request.json();
+
+        console.log("Received Registration Data:", userName, email);
 
         // Check if the user already exists With The Username And is Also Verified
-        const existingVerifiedUserWithUsername = await User.findOne({ userName: username, isVerified: true });
+        const existingVerifiedUserWithUsername = await User.findOne({ userName, isVerified: true });
 
         if (existingVerifiedUserWithUsername) {
             return NextResponse.json({ success: false, message: "Username already Taken" }, { status: 400 });
@@ -55,6 +59,8 @@ export async function POST(request: NextRequest) {
         }
         else {
 
+            console.log("Registering New User:", userName, email);
+
             // Generate Salt and Hash the password
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
@@ -65,7 +71,7 @@ export async function POST(request: NextRequest) {
 
             // Create a new user
             const newUser = new User({
-                userName: username,
+                userName,
                 email: email,
                 password: hashedPassword,
                 verifyCode: verificationCode, // Verification code for email verification
@@ -79,12 +85,18 @@ export async function POST(request: NextRequest) {
 
         }
 
+        console.log("User Registered Successfully:", userName, email);
+
         // Send the verification email to the user
-        const emailSent = await sendVerificationEmail(username, email, verificationCode);
+        const emailSent = await sendVerificationEmail(userName, email, verificationCode);
+
+        console.log("Email Sent");
 
         if (!emailSent.success) {
             return NextResponse.json({ success: false, message: "Error while sending verification email" }, { status: 500 });
         }
+
+        console.log("verify your email.");
 
         return NextResponse.json({ success: true, message: "User registered successfully.Please verify your email.", verificationCode }, { status: 201 });
 
