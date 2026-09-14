@@ -101,7 +101,7 @@ const Login = () => {
         type: "success"
       })
 
-      router.replace(`/verify-email?userName=${data.userName}`);
+      router.replace(`/verify-otp?userName=${data.userName}`);
 
     } catch (error) {
 

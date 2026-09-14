@@ -9,11 +9,7 @@ export async function POST(req: Request) {
 
     try {
 
-        const { otp } = await req.json();
-
-        // Extracting UserName From Url 
-        const url = new URL(req.url);
-        const userName = url.searchParams.get("userName");
+        const { otp, userName } = await req.json();
 
         // Validate the request body using Zod
         const verifyCode = {
