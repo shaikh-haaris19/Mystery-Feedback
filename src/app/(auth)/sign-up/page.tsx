@@ -95,13 +95,25 @@ const Login = () => {
 
       const response = await axios.post("/api/SignUp", data);
 
-      toast.add({
-        title: "Sign-up successful",
-        description: response.data.message,
-        type: "success"
-      })
+      if (response.status === 201) {
 
-      router.replace(`/verify-otp?userName=${data.userName}`);
+        toast.add({
+          title: "Sign-up successful",
+          description: response.data.message,
+          type: "success"
+        })
+
+        router.replace(`/verify-otp?userName=${data.userName}`);
+
+      }else{
+
+        toast.add({
+          title: "Sign-up failed! Please try again.",
+          description: response.data.message,
+          type: "error"
+        })
+
+      }
 
     } catch (error) {
 
@@ -109,7 +121,7 @@ const Login = () => {
       console.error(axiosError.response?.data.message || "Error during sign-up");
 
       toast.add({
-        title: "Sign-up failed",
+        title: "Sign-up failed! Please try again.",
         description: axiosError.response?.data.message || "Error during sign-up",
         type: "error"
       })
@@ -133,7 +145,7 @@ const Login = () => {
             <CardDescription className="text-center text-sm text-muted-foreground">
               Sign up to start Your anonymous Feedback Journey.
             </CardDescription>
-            
+
           </CardHeader>
 
           <CardContent className="px-8 pb-6">

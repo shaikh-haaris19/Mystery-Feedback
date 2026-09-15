@@ -9,6 +9,7 @@ import connectDB from "@/lib/connectDB";
 export const authOptions: NextAuthOptions = {
     // Credentials Provider & GitHub Provider
     providers: [
+
         CredentialsProvider({
 
             // The name to display on the sign in form (e.g. "Sign in with...")
@@ -16,7 +17,7 @@ export const authOptions: NextAuthOptions = {
 
             // This is the description for the sign in form.
             credentials: {
-                email: { label: "Email", type: "email", placeholder: "john@example.com" },
+                identifier: { label: "Username or Email", type: "text" },
                 password: { label: "Password", type: "password" }
             },
 
@@ -29,8 +30,8 @@ export const authOptions: NextAuthOptions = {
 
                     const user = await User.findOne({
                         $or: [
-                            { username: credentials.username },
-                            { email: credentials.email }
+                            { userName: credentials.identifier },
+                            { email: credentials.identifier }
                         ]
                     });
 
@@ -48,7 +49,12 @@ export const authOptions: NextAuthOptions = {
                         throw new Error("Invalid password");
                     }
 
-                    return user;
+                    return {
+                        _id: user._id.toString(),
+                        userName: user.userName,
+                        isVerified: user.isVerified,
+                        isAcceptingMessages: user.isAcceptingMessages,
+                    };
 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } catch (error: any) {
@@ -56,16 +62,18 @@ export const authOptions: NextAuthOptions = {
                 }
             }
         }),
+
         GitHubProvider({
             clientId: process.env.GITHUB_ID!,
             clientSecret: process.env.GITHUB_SECRET!
         })
+
     ],
     // Callbacks for JWT and Session
     callbacks: {
         async jwt({ token, user }) {
 
-            if(user){
+            if (user) {
                 token.id = user._id?.toString()
                 token.isVerified = user.isVerified
                 token.isAcceptingMessages = user.isAcceptingMessages
@@ -73,10 +81,11 @@ export const authOptions: NextAuthOptions = {
             }
 
             return token
+
         },
         async session({ session, token }) {
 
-            if(token){
+            if (token) {
                 session.user._id = token.id
                 session.user.isVerified = token.isVerified
                 session.user.isAcceptingMessages = token.isAcceptingMessages
@@ -87,7 +96,7 @@ export const authOptions: NextAuthOptions = {
         }
     },
     pages: {
-        signIn: "/Sign-In",
+        signIn: "/sign-in",
     },
     session: {
         strategy: "jwt",

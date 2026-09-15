@@ -7,12 +7,22 @@ const sendVerificationEmail = async (userName: string, email: string, verificati
     try {
 
         // Send the verification email using Resend
-        await resend.emails.send({
+        const emailRes = await resend.emails.send({
             from: 'onboarding@resend.dev', // Add your verified sender email here
             to: email,
             subject: 'Mystery Feedback - Verification Code',
             react: ResendVerificationEmail({ username: userName, otp: verificationCode }),
         });
+
+        if(emailRes.error){
+
+            console.error('Error sending verification email:', emailRes.error);
+            return {
+                success: false,
+                message: 'Failed to send verification email. Please try again later.',
+            };
+
+        }
 
         return {
             success: true,

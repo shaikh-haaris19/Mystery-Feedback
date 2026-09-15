@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
+    
     const token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
@@ -11,8 +12,8 @@ export async function middleware(request: NextRequest) {
     const pathname = url.pathname;
 
     const isAuthPage =
-        pathname.startsWith("/login") ||
-        pathname.startsWith("/SignUp") ||
+        pathname.startsWith("/sign-in") ||
+        pathname.startsWith("/sign-up") ||
         pathname.startsWith("/verify") ||
         pathname === "/";
 
@@ -29,7 +30,7 @@ export async function middleware(request: NextRequest) {
     // Unauthenticated user trying to access dashboard
     if (!token && isProtectedPage) {
         return NextResponse.redirect(
-            new URL("/login", request.url)
+            new URL("/sign-in", request.url)
         );
     }
 
@@ -40,7 +41,7 @@ export const config = {
     matcher: [
         "/",
         "/sign-in",
-        // "/sign-up",
+        "/sign-up",
         "/verify/:path*",
         "/dashboard/:path*",
     ],
