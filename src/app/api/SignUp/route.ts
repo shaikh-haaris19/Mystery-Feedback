@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/UserModel";
 import bcrypt from "bcrypt";
 import sendVerificationEmail from "@/Helpers/sendVerificationEmail";
+import { signUpSchema } from "@/Schemas/signUpSchema";
+import { z } from "zod";
 
 export async function POST(request: NextRequest) {
 
@@ -12,6 +14,27 @@ export async function POST(request: NextRequest) {
     try {
 
         const { userName, email, password } = await request.json();
+
+        //Validate The Credentials With ZOD Schema
+        const credentials = {
+            userName,
+            email,
+            password
+        }
+
+        const credentialValidation = signUpSchema.safeParse(credentials);
+
+        if (!credentialValidation.success) {
+
+            const error = z.flattenError(credentialValidation.error).fieldErrors;
+
+            const userNameErrors = error.userName?.[0];
+            const emailErrors = error.email?.[0];
+            const passwordErrors = error.password?.[0];
+
+            return NextResponse.json({ success: false, message: userNameErrors || emailErrors || passwordErrors }, { status: 400 });
+
+        }
 
         // Check if the user already exists With The Username And is Also Verified
         const existingVerifiedUserWithUsername = await User.findOne({ userName, isVerified: true });

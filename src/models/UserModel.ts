@@ -39,15 +39,15 @@ const UserSchema: Schema<User> = new Schema({
     },
     password: {
         type: String,
-        required: [true, 'Password Is Required'],  //custom message tied to the required property
+        default: null,   // No password for GitHub users
     },
     verifyCode: {
         type: String,
-        required: [true, 'Verification Code Is Required'],  //custom message tied to the required property
+        default: null,   // No verification code for GitHub users
     },
     verifyCodeExpiry: {
         type: Date,
-        required: [true, 'Verification Code Expiry Is Required'], //custom message tied to the required property
+        default: null,   // No verification code Expiry for GitHub users
     },
     isVerified: {
         type: Boolean,

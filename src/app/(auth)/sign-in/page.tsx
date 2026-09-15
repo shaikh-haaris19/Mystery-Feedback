@@ -51,8 +51,6 @@ const Login = () => {
       redirect: false,
     })
 
-    console.log("Sign-In Result:", result);
-
     // Handle the result of the sign-in attempt
     if (result?.error) {
 
@@ -85,11 +83,9 @@ const Login = () => {
     setIsSubmitting(true);
 
     const result = await signIn("github", {
-      callbackUrl: "/dashboard?githubSignIn=true",
+      callbackUrl: "/dashboard",
       redirect: false
     });
-
-    console.log("GitHub Sign-In Result:", result);
 
     // Handle the result of the GitHub sign-in attempt
     if (result?.error) {
@@ -249,6 +245,18 @@ const Login = () => {
                 <span className="mr-2"><Image width={20} height={20} src="/github-icon.webp" alt="GitHub" /></span>
                 Continue with GitHub
               </Button>
+
+              {/* Navigate User to Sign-Up Page If They Don't Have an Account */}
+              <p className="text-center text-sm text-muted-foreground">
+                <span className="text-muted-foreground mr-2">Don&apos;t have an account?</span>
+                <button
+                  type="button"
+                  className="text-blue-500 hover:underline cursor-pointer"
+                  onClick={() => router.push("/sign-up")}
+                >
+                  Sign Up
+                </button>
+              </p>
 
             </form>
 

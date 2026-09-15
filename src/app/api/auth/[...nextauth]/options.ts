@@ -51,6 +51,7 @@ export const authOptions: NextAuthOptions = {
 
                     return {
                         _id: user._id.toString(),
+                        email: user.email,
                         userName: user.userName,
                         isVerified: user.isVerified,
                         isAcceptingMessages: user.isAcceptingMessages,
@@ -71,6 +72,33 @@ export const authOptions: NextAuthOptions = {
     ],
     // Callbacks for JWT and Session
     callbacks: {
+        async signIn({ user, account }) {
+
+            if (account?.provider === "github") {
+
+                await connectDB();
+
+                const existingUser = await User.findOne({ email: user.email });
+
+                if (!existingUser) {
+
+                    const newUser = new User({
+                        userName: `GITHUB_USER_${user.name}`,
+                        email: user.email,
+                        isVerified: true,
+                        isAcceptingMessages: true,
+                        messages: []
+                    });
+
+                    await newUser.save();
+
+                }
+
+            }
+
+            return true;
+
+        },
         async jwt({ token, user }) {
 
             if (user) {

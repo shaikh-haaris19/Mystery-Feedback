@@ -25,6 +25,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Loader2 } from "lucide-react"
+import Image from "next/image"
+import { signIn } from "next-auth/react"
 
 const Login = () => {
 
@@ -105,7 +107,7 @@ const Login = () => {
 
         router.replace(`/verify-otp?userName=${data.userName}`);
 
-      }else{
+      } else {
 
         toast.add({
           title: "Sign-up failed! Please try again.",
@@ -118,7 +120,6 @@ const Login = () => {
     } catch (error) {
 
       const axiosError = error as AxiosError<ApiResponse>;
-      console.error(axiosError.response?.data.message || "Error during sign-up");
 
       toast.add({
         title: "Sign-up failed! Please try again.",
@@ -128,6 +129,37 @@ const Login = () => {
 
     } finally {
       setIsSubmitting(false);
+    }
+
+  }
+
+  // Handle GitHub Sign-Up
+  const handleGitHubSignUp = async () => {
+
+    setIsSubmitting(true);
+
+    const result = await signIn("github", {
+      callbackUrl: "/dashboard",
+      redirect: false
+    });
+
+    // Handle the result of the GitHub sign-in attempt
+    if (result?.error) {
+
+      toast.add({
+        title: "Sign-Up failed! Please try again.",
+        description: "Error during GitHub sign-up",
+        type: "error"
+      })
+
+    }
+
+    setIsSubmitting(false);
+
+    if (result?.ok && result?.url) {
+
+      router.replace(result.url);
+
     }
 
   }
@@ -151,10 +183,10 @@ const Login = () => {
           <CardContent className="px-8 pb-6">
 
             <form
-              className="space-y-8"
+              className="space-y-5"
               onSubmit={form.handleSubmit(onSubmit)}
             >
-              <FieldGroup className="gap-7">
+              <FieldGroup className="gap-4">
 
                 {/* Username */}
                 <Controller
@@ -297,6 +329,36 @@ const Login = () => {
                 </Button>
 
               </div>
+
+              {/* Or Sign-In With GitHUb */}
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-sm text-muted-foreground">OR</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              {/* GitHub Sign In */}
+              <Button
+                type="button"
+                variant="outline"
+                className="h-12 w-full text-base"
+                onClick={() => handleGitHubSignUp()}
+              >
+                <span className="mr-2"><Image width={20} height={20} src="/github-icon.webp" alt="GitHub" /></span>
+                Continue with GitHub
+              </Button>
+
+              {/* Navigate User to Sign-In Page If They Already Have an Account */}
+              <p className="text-center text-sm text-muted-foreground">
+                <span className="text-muted-foreground mr-2">Already have an account?</span>
+                <button
+                  type="button"
+                  className="text-blue-500 hover:underline cursor-pointer"
+                  onClick={() => router.push("/sign-in")}
+                >
+                  Sign In
+                </button>
+              </p>
 
             </form>
 
