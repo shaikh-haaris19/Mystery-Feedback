@@ -94,6 +94,12 @@ export const authOptions: NextAuthOptions = {
 
                 }
 
+                //Injecting 
+                user._id = existingUser?._id?.toString();
+                user.isVerified = existingUser?.isVerified;
+                user.isAcceptingMessages = existingUser?.isAcceptingMessages;
+                user.userName = existingUser?.userName;
+
             }
 
             return true;
@@ -102,6 +108,7 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
 
             if (user) {
+                console.log("USER EXISTS — INJECTING DATA");
                 token.id = user._id?.toString()
                 token.isVerified = user.isVerified
                 token.isAcceptingMessages = user.isAcceptingMessages

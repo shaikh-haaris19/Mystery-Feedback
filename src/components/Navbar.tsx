@@ -2,10 +2,15 @@
 import { Button } from "@/components/ui/button"
 import { signOut, useSession } from 'next-auth/react';
 import Link from "next/link";
+import { useEffect } from "react";
 
 const Navbar = () => {
 
     const { data: session } = useSession();
+
+    useEffect(() => {
+        console.log("Session Data:", session);
+    }, [session]);
 
     return (
         <nav className="w-full flex items-center p-5 bg-gray-800 text-white">
