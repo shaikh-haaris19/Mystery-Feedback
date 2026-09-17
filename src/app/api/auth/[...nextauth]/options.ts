@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
                 if (!existingUser) {
 
                     const newUser = new User({
-                        userName: `GITHUB_USER_${user.name}`,
+                        userName: `${user.name}`,
                         email: user.email,
                         isVerified: true,
                         isAcceptingMessages: true,
@@ -108,7 +108,6 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
 
             if (user) {
-                console.log("USER EXISTS — INJECTING DATA");
                 token.id = user._id?.toString()
                 token.isVerified = user.isVerified
                 token.isAcceptingMessages = user.isAcceptingMessages

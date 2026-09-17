@@ -3,6 +3,7 @@ import User from "@/models/UserModel";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 
+// Update isAcceptingMessages status
 export async function POST(req: Request) {
 
     await connectDB();
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
 
 }
 
+// Fetch the isAcceptingMessages status
 export async function GET(req: Request) {
 
     await connectDB();
