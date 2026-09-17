@@ -5,7 +5,9 @@ import User from "@/models/UserModel";
 
 export async function DELETE(req: Request, { params }: { params: { messageId: string } }) {
 
-    const { messageId } = params;
+    const { messageId } = await params;
+
+    console.log("Deleting message with ID:", messageId);
 
     await connectDB();
 

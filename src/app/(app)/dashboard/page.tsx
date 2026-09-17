@@ -222,7 +222,7 @@ const Dashboard = () => {
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCcw className="h-4 w-4" />}
             </Button>
 
-            <div>
+            <div className ="mt-8 md:mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {
                     messages.length > 0 ? (
                         messages.map((message, index) => (

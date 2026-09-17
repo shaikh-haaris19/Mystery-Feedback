@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Message from User123",
+    "content": "Hey, how are you doing today?",
+    "received": "10 minutes ago"
+  },
+  {
+    "title": "Message from SecretAdmirer",
+    "content": "I really liked your recent post!",
+    "received": "2 hours ago"
+  },
+  {
+    "title": "Message from MysteryGuest",
+    "content": "Do you have any book recommendations?",
+    "received": "1 day ago"
+  },
+  {
+    "title": "Message from AnonymousUser",
+    "content": "Your website looks really amazing!",
+    "received": "2 days ago"
+  },
+  {
+    "title": "Message from TechFan",
+    "content": "Which technology are you currently learning?",
+    "received": "3 days ago"
+  },
+  {
+    "title": "Message from UnknownUser",
+    "content": "What inspired you to build this project?",
+    "received": "4 days ago"
+  },
+  {
+    "title": "Message from CuriousDev",
+    "content": "Can you share some tips for learning React?",
+    "received": "5 days ago"
+  },
+  {
+    "title": "Message from SecretFriend",
+    "content": "Hope you are having a great day!",
+    "received": "1 week ago"
+  }
+]

@@ -35,6 +35,8 @@ type MessageCardProps = {
 
 const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
 
+    console.log(message)
+
 
     const handleDelete = async () => {
 
@@ -54,9 +56,8 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
 
     }
 
-
     return (
-        <Card className="w-full max-w-sm">
+        <Card className="w-full max-w-sm shadow-md">
             <CardHeader>
                 <CardTitle>{message.content}</CardTitle>
                 <AlertDialog>
@@ -78,7 +79,10 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
                     </AlertDialogContent>
                 </AlertDialog>
                 <CardDescription>
-                    {message.createdAt.toLocaleString()}
+                    {
+                    new Date(message.createdAt).toLocaleString("en-IN", {
+                        timeZone: "Asia/Kolkata",
+                    })}
                 </CardDescription>
             </CardHeader>
         </Card>
