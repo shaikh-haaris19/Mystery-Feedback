@@ -7,8 +7,6 @@ export async function DELETE(req: Request, { params }: { params: { messageId: st
 
     const { messageId } = await params;
 
-    console.log("Deleting message with ID:", messageId);
-
     await connectDB();
 
     const session = await getServerSession(authOptions);

@@ -2,10 +2,7 @@
 
 import {
     Card,
-    CardAction,
-    CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -27,6 +24,7 @@ import { Message } from "@/models/UserModel"
 import { ApiResponse } from "@/Types/ApiResponse"
 import axios from "axios"
 import { toast } from "./ui/toast"
+import { useState } from "react"
 
 type MessageCardProps = {
     message: Message;
@@ -35,8 +33,7 @@ type MessageCardProps = {
 
 const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
 
-    console.log(message)
-
+    const [open, setOpen] = useState(false)
 
     const handleDelete = async () => {
 
@@ -50,6 +47,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
                 type: "success"
             })
 
+            setOpen(false)
             onMessageDelete(message._id.toString())
 
         }
@@ -60,8 +58,8 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
         <Card className="w-full max-w-sm shadow-md">
             <CardHeader>
                 <CardTitle>{message.content}</CardTitle>
-                <AlertDialog>
-                    <AlertDialogTrigger render={<Button variant="destructive"><X className="h-5 w-5" /></Button>} />
+                <AlertDialog open={open} onOpenChange={setOpen}>
+                    <AlertDialogTrigger render={<Button className="cursor-pointer" variant="destructive"><X className="h-5 w-5" /></Button>} />
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you Sure About Deleting the Message?</AlertDialogTitle>
@@ -80,9 +78,9 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
                 </AlertDialog>
                 <CardDescription>
                     {
-                    new Date(message.createdAt).toLocaleString("en-IN", {
-                        timeZone: "Asia/Kolkata",
-                    })}
+                        new Date(message.createdAt).toLocaleString("en-IN", {
+                            timeZone: "Asia/Kolkata",
+                        })}
                 </CardDescription>
             </CardHeader>
         </Card>

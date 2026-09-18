@@ -55,7 +55,7 @@ const Dashboard = () => {
             const errorMessage = error as AxiosError<ApiResponse>;
             toast.add({
                 title: "Error",
-                description: errorMessage.message,
+                description: errorMessage.response?.data.message,
                 type: "error"
             })
 
@@ -77,15 +77,15 @@ const Dashboard = () => {
         try {
 
             const response = await axios.get<ApiResponse>(`/api/get-messages`)
+
             setMessages(response.data.messages || [])
 
         } catch (error) {
 
             const errorMessage = error as AxiosError<ApiResponse>;
-            console.error("Error fetching messages:", errorMessage.status, errorMessage.message);
             toast.add({
                 title: "Error",
-                description: errorMessage.message,
+                description: errorMessage.response?.data.message,
                 type: "error"
             })
 
@@ -118,7 +118,7 @@ const Dashboard = () => {
         try {
 
             const response = await axios.post<ApiResponse>(`/api/accept-messages`, {
-                isAcceptingMessages: !isAcceptingMessages
+                isAcceptingMessages
             })
 
             setValue("isAcceptingMessages", !isAcceptingMessages)
@@ -204,7 +204,8 @@ const Dashboard = () => {
                     {...register("isAcceptingMessages", { required: true })}
                     checked={isAcceptingMessages}
                     onCheckedChange={handleSwitchToggle}
-                    disabled={isSwitchLoading}
+                    className="cursor-pointer"
+                    disabled={loading}
                 />
                 <span className="ml-2">
                     Accept Messages: {isAcceptingMessages ? "Yes" : "No"}
@@ -214,15 +215,15 @@ const Dashboard = () => {
             <Separator />
 
             <Button
-                onClick={fetchAllMessages}
-                className="mt-4"
+                onClick={() => fetchAllMessages()}
+                className="mt-4 cursor-pointer"
                 disabled={loading}
                 variant="outline"
             >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCcw className="h-4 w-4" />}
             </Button>
 
-            <div className ="mt-8 md:mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 md:mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {
                     messages.length > 0 ? (
                         messages.map((message, index) => (

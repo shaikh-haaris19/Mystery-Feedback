@@ -81,7 +81,7 @@ const SendMessage = () => {
                     type: 'success',
                 })
 
-            }else {
+            } else {
 
                 toast.add({
                     title: 'Error Sending Message',

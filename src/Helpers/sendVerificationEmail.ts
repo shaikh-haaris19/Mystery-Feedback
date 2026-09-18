@@ -14,7 +14,7 @@ const sendVerificationEmail = async (userName: string, email: string, verificati
             react: ResendVerificationEmail({ username: userName, otp: verificationCode }),
         });
 
-        if(emailRes.error){
+        if (emailRes.error) {
 
             console.error('Error sending verification email:', emailRes.error);
             return {

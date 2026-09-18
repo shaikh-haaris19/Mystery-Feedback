@@ -37,7 +37,7 @@ export async function POST(req: Request) {
             content: messageContent,
             createdAt: new Date()
         };
-        
+
         user.messages.push(message as Message);
         await user.save();
 

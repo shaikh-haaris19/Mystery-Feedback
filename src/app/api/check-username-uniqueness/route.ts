@@ -22,7 +22,6 @@ export async function GET(req: Request) {
 
         //Validate the query parameters using Zod
         const validatedParams = checkUsernameSchema.safeParse(queryParams);
-        console.log("Validated Params:", validatedParams);
 
         if (!validatedParams.success) {
             const error = z.flattenError(validatedParams.error).fieldErrors.userName;
@@ -37,8 +36,6 @@ export async function GET(req: Request) {
         if (existingVerifiedUser) {
             return Response.json({ success: false, message: "Username is already taken" }, { status: 409 });
         }
-
-        console.log("Username is unique:", userName);
 
         return Response.json({ success: true, message: "Username Is Unique" }, { status: 200 });
 
